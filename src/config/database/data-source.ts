@@ -1,3 +1,4 @@
+import { User } from "src/user/entities/user.entity";
 import { DataSourceOptions, DataSource } from "typeorm";
 
 
@@ -8,9 +9,11 @@ export const dataSourceOptions: DataSourceOptions = {
     username: "root",
     password: "nestjs-interview",
     database: "interview",
-    entities: ['dist/**/*.entity.js'],
     migrations: ['dist/config/database/migrations/*{.ts,.js}'],
-    synchronize: false
+    entities: ['dist/**/*.entity.js'],
+    synchronize: false,
+    
+
 }
 
 const dataSource = new DataSource(dataSourceOptions);
