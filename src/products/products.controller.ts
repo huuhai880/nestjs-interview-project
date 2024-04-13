@@ -1,30 +1,63 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, HttpStatus, Post, Put } from '@nestjs/common';
+import { ProductsService } from './products.service';
+import { ResponseDataClass } from 'src/common/constants/response.constant';
+import { HttpMessage } from 'src/common/constants/enum.constant';
 
 @Controller('products')
 export class ProductsController {
+
+  constructor(private readonly productsService: ProductsService) { }
+
   @Get()
-  findAllProducts(): string {
-    return 'This action returns all product';
+  async findAllProducts(): Promise<ResponseDataClass<string>> {
+    try {
+      return new ResponseDataClass<string>(this.productsService.findAllProducts(), HttpStatus.OK, HttpMessage.OK);
+    } catch (error) {
+
+      console.log(error)
+
+      return new ResponseDataClass<string>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+    }
   }
 
   @Post()
-  createProduct(): string {
-    return "create products"
+  async createProduct(): Promise<ResponseDataClass<string>> {
+
+    try {
+      return new ResponseDataClass<string>(this.productsService.createProduct(), HttpStatus.OK, HttpMessage.OK);
+    } catch (error) {
+      return new ResponseDataClass<string>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+    }
   }
 
   @Get('/:id')
-  findDetailProduct():string {
-    return "this detail for product"
+  async findDetailProduct(): Promise<ResponseDataClass<string>> {
+
+    try {
+      return new ResponseDataClass<string>(this.productsService.findDetailProduct(), HttpStatus.OK, HttpMessage.OK);
+    } catch (error) {
+      return new ResponseDataClass<string>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+    }
   }
 
   @Put('/:id')
-  updateProduct(): string {
-    return "this detail for product"
+  async updateProduct(): Promise<ResponseDataClass<string>> {
+
+    try {
+      return new ResponseDataClass<string>(this.productsService.updateProduct(), HttpStatus.OK, HttpMessage.OK);
+    } catch (error) {
+      return new ResponseDataClass<string>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+    }
   }
 
   @Delete('/:id')
-  deleteProduct(): string {
-    return "this detail for product"
+  async deleteProduct(): Promise<ResponseDataClass<string>> {
+
+    try {
+      return new ResponseDataClass<string>(this.productsService.deleteProduct(), HttpStatus.OK, HttpMessage.OK);
+    } catch (error) {
+      return new ResponseDataClass<string>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+    }
   }
 
 }
