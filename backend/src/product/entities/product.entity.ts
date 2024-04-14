@@ -26,7 +26,7 @@ export class Products {
   @CreateDateColumn({ default: () => "CURRENT_TIMESTAMP(6)" })
   created_at: Date;
 
-  @Column()
+  @Column({nullable: true})
   user_created: string;
 
   @CreateDateColumn({ nullable: true, default: () => "NULL", onUpdate: "CURRENT_TIMESTAMP(6)" })

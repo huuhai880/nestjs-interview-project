@@ -14,7 +14,4 @@ export class CreateProductDto {
     @IsNumberString()
     price: number;
 
-    @IsNotEmpty({message:"User create is require"})
-    user_created: string;
-
 }

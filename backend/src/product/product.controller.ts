@@ -19,6 +19,7 @@ export class ProductsController {
   @Get()
   async findAllProducts(@Query() filterProductDto: FilterProductDto): Promise<ResponseDataClass<ProductsInterface>> {
     try {
+      console.log(filterProductDto)
       return new ResponseDataClass<ProductsInterface>(await this.productsService.findAllProducts(filterProductDto), HttpStatus.OK, HttpMessage.OK);
     } catch (error) {
       return new ResponseDataClass<ProductsInterface>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
