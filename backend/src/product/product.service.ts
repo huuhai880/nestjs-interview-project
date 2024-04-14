@@ -65,7 +65,7 @@ export class ProductsService {
 
     } catch (error) {
 
-      this.logger.log({ level: "error", message: "This is Error level", err: error, errCustomCode: "20" });
+      this.logger.log({ level: "error", message: error?.message, err: error, errCustomCode: "20" });
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
 
     }
@@ -79,10 +79,14 @@ export class ProductsService {
     try {
       const res = await this.productRepository.save(createProductDto)
 
+      if(res?.id){
+        throw new HttpException("Product can't create", HttpStatus.BAD_REQUEST);
+      }
+
       return await this.productRepository.findOneBy({ id: res?.id });
     } catch (error) {
 
-      this.logger.log({ level: "error", message: "This is Error level", err: error, errCustomCode: "20" });
+      this.logger.log({ level: "error", message: error?.message, err: error, errCustomCode: "20" });
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
   }
@@ -105,7 +109,7 @@ export class ProductsService {
     try {
       return await this.productRepository.update(id, { ...updateProductDto, user_updated: "admin" })
     } catch (error) {
-      this.logger.log({ level: "error", message: "This is Error level", err: error, errCustomCode: "20" });
+      this.logger.log({ level: "error", message: error?.message, err: error, errCustomCode: "20" });
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
   }
@@ -115,7 +119,7 @@ export class ProductsService {
     try {
       return await this.productRepository.update(id, { deleted_at: new Date().toString(), user_deleted: 'admin' });
     } catch (error) {
-      this.logger.log({ level: "error", message: "This is Error level", err: error, errCustomCode: "20" });
+      this.logger.log({ level: "error", message: error?.message, err: error, errCustomCode: "20" });
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
 
