@@ -6,7 +6,6 @@ export class CustomLoggerService {
   myFormat: winston.Logform.Format = null;
   createLoggerConfig: winston.LoggerOptions = null;
   constructor() {
-   /** A transport for winston which logs to a rotating file based on date**/
     this.dailyRotateFileTransport = new DailyRotateFile({
       filename: `logs/app_log-%DATE%.log`,
       zippedArchive: false,
@@ -14,9 +13,6 @@ export class CustomLoggerService {
       maxFiles: '1d',
     });
 
-    /**
-     * Custom log format tailored to our application's requirements
-     */
     this.myFormat = winston.format.printf(
       ({ level = 'info', message, timestamp, req, err, ...metadata }) => {
         if (!req) {
@@ -43,7 +39,7 @@ export class CustomLoggerService {
 
     
     this.createLoggerConfig = {
-      level: 'warn', // this will print warn and above level (error also)
+      level: 'warn',
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.splat(),
