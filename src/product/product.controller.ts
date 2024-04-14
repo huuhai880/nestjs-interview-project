@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UploadedFile, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProductsService } from './product.service';
 import { ResponseDataClass } from 'src/common/constants/response.constant';
 import { HttpMessage } from 'src/common';
@@ -7,6 +7,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { FilterProductDto } from './dto/filter-product.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileFilter, storageConfig } from 'src/config/fileUpload/fileUploadConfig';
 
 @Controller('products')
 export class ProductsController {
@@ -23,7 +25,12 @@ export class ProductsController {
   }
 
   @Post()
-  async createProduct(@Body() createProductDto: CreateProductDto): Promise<ResponseDataClass<Products>> {
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(FileInterceptor('thumbnail', {
+    storage: storageConfig('product'),
+    fileFilter: fileFilter
+  }))
+  async createProduct(@Body() createProductDto: CreateProductDto,  @UploadedFile() file: Express.Multer.File): Promise<ResponseDataClass<Products>> {
 
     try {
       return new ResponseDataClass<Products>(await this.productsService.createProduct(createProductDto), HttpStatus.OK, HttpMessage.OK);
@@ -33,7 +40,7 @@ export class ProductsController {
   }
 
   @Get('/:id')
-  async findDetailProduct(@Param('id') id:number): Promise<ResponseDataClass<Products>> {
+  async findDetailProduct(@Param('id') id: number): Promise<ResponseDataClass<Products>> {
 
     try {
       return new ResponseDataClass<Products>(await this.productsService.findDetail(id), HttpStatus.OK, HttpMessage.OK);
@@ -43,7 +50,11 @@ export class ProductsController {
   }
 
   @Put('/:id')
-  async updateProduct(@Param('id') id:number, @Body() updateProductDto: UpdateProductDto): Promise<ResponseDataClass<UpdateResult>> {
+  @UseInterceptors(FileInterceptor('thumbnail', {
+    storage: storageConfig('product'),
+    fileFilter: fileFilter
+  }))
+  async updateProduct(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto, @UploadedFile() file: Express.Multer.File): Promise<ResponseDataClass<UpdateResult>> {
 
     try {
       return new ResponseDataClass<UpdateResult>(await this.productsService.update(id, updateProductDto), HttpStatus.OK, HttpMessage.OK);
@@ -53,7 +64,7 @@ export class ProductsController {
   }
 
   @Delete('/:id')
-  async deleteProduct(@Param('id') id:number): Promise<ResponseDataClass<DeleteResult>> {
+  async deleteProduct(@Param('id') id: number): Promise<ResponseDataClass<DeleteResult>> {
 
     try {
       return new ResponseDataClass<DeleteResult>(await this.productsService.delete(id), HttpStatus.OK, HttpMessage.OK);

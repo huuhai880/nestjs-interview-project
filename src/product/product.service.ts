@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Products } from "./entities/product.entity";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Like, Repository, UpdateResult } from "typeorm";
+import { DeleteResult, IsNull, Like, Repository, UpdateResult } from "typeorm";
 import { FilterProductDto } from "./dto/filter-product.dto";
 import { PageConfig } from "src/common";
 import { UpdateProductDto } from "./dto/update-product.dto";
@@ -22,7 +22,8 @@ export class ProductsService {
     const [res, total] = await this.productRepository.findAndCount({
       where: [
         {
-          product_name: Like('%' + product_name + '%')
+          product_name: Like('%' + product_name + '%'),
+          deleted_at: IsNull()
 
         }
       ],
@@ -34,7 +35,9 @@ export class ProductsService {
         product_name: true,
         price: true,
         type_of_product: true,
-        category_id: true
+        category_id: true,
+        user_created:true,
+        deleted_at:true
 
       }
     })
@@ -62,7 +65,7 @@ export class ProductsService {
       return await this.productRepository.findOneBy({ id: res?.id });
     } catch (error) {
 
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -80,13 +83,12 @@ export class ProductsService {
     })
   }
 
-
   async update(id: number, updateProductDto: UpdateProductDto): Promise<UpdateResult> {
-    return await this.productRepository.update(id, updateProductDto)
+    return await this.productRepository.update(id, {...updateProductDto, user_updated:"admin"})
   }
 
 
   async delete(id: number): Promise<DeleteResult> {
-    return await this.productRepository.delete(id);
+    return await this.productRepository.update(id, { deleted_at: new Date().toString(), user_deleted: 'admin' });
   }
 }
