@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsNumberString } from "class-validator";
 
 export class CreateProductDto {
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "Product name is require" })
     product_name: string;
 
     @IsNumberString()
@@ -10,11 +10,11 @@ export class CreateProductDto {
     @IsNumberString()
     type_of_product: number;
 
-    @IsNotEmpty()
+    @IsNotEmpty({message:"Price is require"})
     @IsNumberString()
     price: number;
 
-    @IsNotEmpty()
-    user_created:string;
+    @IsNotEmpty({message:"User create is require"})
+    user_created: string;
 
 }

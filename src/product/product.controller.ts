@@ -9,6 +9,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter, storageConfig } from 'src/config/fileUpload/fileUploadConfig';
+import { ProductsInterface } from './product.interface';
 
 @Controller('products')
 export class ProductsController {
@@ -16,11 +17,11 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
   @Get()
-  async findAllProducts(@Query() filterProductDto: FilterProductDto): Promise<ResponseDataClass<any>> {
+  async findAllProducts(@Query() filterProductDto: FilterProductDto): Promise<ResponseDataClass<ProductsInterface>> {
     try {
-      return new ResponseDataClass<any>(await this.productsService.findAllProducts(filterProductDto), HttpStatus.OK, HttpMessage.OK);
+      return new ResponseDataClass<ProductsInterface>(await this.productsService.findAllProducts(filterProductDto), HttpStatus.OK, HttpMessage.OK);
     } catch (error) {
-      return new ResponseDataClass<any>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
+      return new ResponseDataClass<ProductsInterface>(null, HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND, error);
     }
   }
 
