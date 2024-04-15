@@ -2,8 +2,6 @@
 
 ### 1.1 Project configuration
 
-Start by cloning this project on your workstation or click on ["Use this template"](https://github.com/new?template_name=nestjs-template&template_owner=Saluki) in Github.
-
 ``` sh
 git clone https://github.com/huuhai880/nestjs-interview-project
 ```
